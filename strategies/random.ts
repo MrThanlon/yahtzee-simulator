@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { finalScore, initialState, isGameOver, reRoll, ScoresKey, selectScore, State } from "../state.js"
+import { checkScore } from "../helper.js"
 
 function ramdomYesOrNo() {
   return Math.random() < 0.5
@@ -20,10 +21,23 @@ for (let i = 0; i < numRun; i++) {
                 break
             }
         }
-        let index = Math.floor(Math.random() * 12)
-        while (!selectScore(state, scoresKey[index] as ScoresKey)) {
-            index = Math.floor(Math.random() * 12)
+        // use max score
+        let max = 0
+        let k = scoresKey[0] as ScoresKey
+        for (const key of scoresKey) {
+            const s = checkScore(state, key as ScoresKey)
+            if (max === 0) {
+                if (s != undefined) {
+                    max = s
+                    k = key as ScoresKey
+                }
+            }
+            if (s != undefined && s > max) {
+                max = s
+                k = key as ScoresKey
+            }
         }
+        selectScore(state, k)
     }
 
     const score = finalScore(state)
