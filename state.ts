@@ -15,7 +15,7 @@ export const State = z.object({
     /**
      * 当前的骰子
      */
-    dices: z.array(z.number().int().min(1).max(6)).length(5).default([1, 1, 1, 1, 1]),
+    dices: z.array(z.number().int().min(1).max(6)).length(5),
     /**
      * 计分板
      */
@@ -55,7 +55,8 @@ export const State = z.object({
 export type State = z.infer<typeof State>
 
 export function initialState(): State {
-    return State.parse({ scores: {} })
+    const dices = Array(5).fill(0).map(() => rollDice())
+    return State.parse({ scores: {}, dices })
 }
 
 /**
