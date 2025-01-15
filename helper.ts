@@ -19,7 +19,7 @@ function isNumberScore(score: ScoresKey): score is NumberScoreType {
     return score in sk
 }
 
-function count(dices: number[]): number[] {
+export function count(dices: number[]): number[] {
     return dices.reduce((acc, cur) => {
         acc[cur] += 1
         return acc
@@ -140,4 +140,13 @@ export function checkScore(state: State, selected: ScoresKey): number | undefine
         return yahtzee(state.dices)
     }
     return undefined
+}
+
+/**
+ * 计算投出指定骰子的概率
+ * @param num 
+ * @param expected 
+ */
+export function posibility(num: number, expected: number[]) {
+
 }

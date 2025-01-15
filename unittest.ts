@@ -16,3 +16,9 @@ export function assert(condition: boolean, message?: string): void {
         throw new Error(message)
     }
 }
+
+export function assertEquals(actual: any, expected: any, message?: string): void {
+    if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        throw new Error(message || `Expected ${expected}, got ${actual}`)
+    }
+}

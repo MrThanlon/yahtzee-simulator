@@ -54,61 +54,56 @@ export const State = z.object({
 })
 export type State = z.infer<typeof State>
 
-export function initialState(): State {
+export function initialState() {
     const dices = Array(5).fill(0).map(() => rollDice())
-    return State.parse({ scores: {}, dices })
-}
-
-/**
- * 重新掷骰子
- * @param state 
- * @param diceIndexes 
- * @returns 
- */
-export function reRoll(state: State, diceIndexes: number[]): boolean {
-    if (state.reRollDice <= 0) {
-        return false
+    const state = State.parse({ scores: {}, dices })
+    return {
+        state,
+        roll(diceIndexes: number[]) {
+            if (state.reRollDice <= 0) {
+                return false
+            }
+            if (diceIndexes.length > 5) {
+                return false
+            }
+            diceIndexes.forEach(i => {
+                state.dices[i] = rollDice()
+            })
+            state.reRollDice -= 1
+            return true
+        },
+        check(selected: ScoresKey) {
+            return checkScore(state, selected)
+        },
+        select(selected: ScoresKey) {
+            const score = checkScore(state, selected)
+            if (score !== undefined) {
+                state.scores[selected] = score
+                state.reRollDice = 2
+                state.round += 1
+                return true
+            }
+            return false
+        },
+        end() {
+            return state.round >= 11
+        },
+        score() {
+            return Object.values(state.scores).reduce((acc, cur) => acc + (cur || 0), 0)
+        }
     }
-    if (diceIndexes.length > 5) {
-        return false
-    }
-    diceIndexes.forEach(i => {
-        state.dices[i] = rollDice()
-    })
-    state.reRollDice -= 1
-    return true
 }
 
 declareTest('state', () => {
     console.debug(initialState())
 })
 
-declareTest('reRoll', () => {
+declareTest('roll', () => {
     const state = initialState()
-    reRoll(state, [0, 1, 2])
-    console.debug(state)
+    state.roll([0, 1, 2])
+    console.debug(state.state.dices)
 })
 
 export const Scores = State.shape.scores
 export type Scores = z.infer<typeof Scores>
 export type ScoresKey = keyof Scores
-
-export function selectScore(state: State, selected: ScoresKey): boolean {
-    const score = checkScore(state, selected)
-    if (score !== undefined) {
-        state.scores[selected] = score
-        state.reRollDice = 2
-        state.round += 1
-        return true
-    }
-    return false
-}
-
-export function isGameOver(state: State): boolean {
-    return state.round >= 11
-}
-
-export function finalScore(state: State): number {
-    const score = Object.values(state.scores).reduce((acc, cur) => acc + (cur || 0), 0)
-    return score
-}
