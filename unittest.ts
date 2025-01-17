@@ -1,5 +1,5 @@
 export function declareTest(name: string, fn: () => void): void {
-    if (!process.env.RUN_TEST) {
+    if (process && !process.env.RUN_TEST) {
         return
     }
     try {
