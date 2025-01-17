@@ -2,8 +2,6 @@ import RAPIER from "@dimforge/rapier3d"
 import * as THREE from "three"
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
-console.log(RAPIER)
-
 let gravity = { x: 0.0, y: -9.81, z: 0.0 }
 let world = new RAPIER.World(gravity)
 
