@@ -13,7 +13,7 @@ const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic()
 const rigidBody = world.createRigidBody(rigidBodyDesc)
 
 // Create a cuboid collider attached to the dynamic rigidBody.
-const colliderDesc = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5).setRestitution(1)
+const colliderDesc = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5).setRestitution(0.7)
 const collider = world.createCollider(colliderDesc, rigidBody)
 
 const containerBody = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicVelocityBased())
@@ -21,7 +21,7 @@ const containerShape = cylinderContainer(2, 5, 16)
 const container = RAPIER.ColliderDesc.trimesh(
     containerShape.vertices,
     containerShape.indices
-)
+).setRestitution(0.7).setFriction(0)
 world.createCollider(container, containerBody)
 
 // const container = RAPIER.ColliderDesc.trimesh(new Float32Array([]), new Uint32Array([]))
@@ -63,7 +63,7 @@ scene.add(lines)
 const startTime = Date.now()
 const gameLoop = () => {
     // Step the simulation forward.  
-    if (Date.now() - startTime < 5000) {
+    if (Date.now() - startTime < 10000) {
         const amp = 10
         if (1) {
             const x = (Math.random() - 0.5) * amp
